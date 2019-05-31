@@ -26,23 +26,14 @@ class Profit extends Component {
     const rootClassName = classNames(classes.root, className);
 
     return (
-      <Paper
-        {...rest}
-        className={rootClassName}
-      >
+      <Paper {...rest} className={rootClassName}>
         <div className={classes.content}>
           <div className={classes.details}>
-            <Typography
-              className={classes.title}
-              variant="body2"
-            >
-              TOTAL PROFIT
+            <Typography className={classes.title} variant="body2">
+              TOTAL SALES
             </Typography>
-            <Typography
-              className={classes.value}
-              variant="h3"
-            >
-              $23,200
+            <Typography className={classes.value} variant="h3">
+              $5,000
             </Typography>
           </div>
           <div className={classes.iconWrapper}>

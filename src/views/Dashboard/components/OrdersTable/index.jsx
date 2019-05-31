@@ -11,7 +11,6 @@ import { withStyles } from '@material-ui/core';
 
 // Material components
 import {
-  Button,
   CircularProgress,
   Table,
   TableBody,
@@ -30,7 +29,6 @@ import {
   Portlet,
   PortletHeader,
   PortletLabel,
-  PortletToolbar,
   PortletContent,
   Status
 } from 'components';
@@ -50,21 +48,19 @@ class OrdersTable extends Component {
   state = {
     isLoading: false,
     limit: 10,
-    orders: [],
-    ordersTotal: 0
+    orders: []
   };
 
   async getOrders(limit) {
     try {
       this.setState({ isLoading: true });
 
-      const { orders, ordersTotal } = await getOrders(limit);
+      const { orders } = await getOrders(limit);
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          orders,
-          ordersTotal
+          orders
         });
       }
     } catch (error) {
@@ -91,7 +87,7 @@ class OrdersTable extends Component {
 
   render() {
     const { classes, className } = this.props;
-    const { isLoading, orders, ordersTotal } = this.state;
+    const { isLoading, orders } = this.state;
 
     const rootClassName = classNames(classes.root, className);
     const showOrders = !isLoading && orders.length > 0;
@@ -99,26 +95,10 @@ class OrdersTable extends Component {
     return (
       <Portlet className={rootClassName}>
         <PortletHeader noDivider>
-          <PortletLabel
-            subtitle={`${ordersTotal} in total`}
-            title="Latest orders"
-          />
-          <PortletToolbar>
-            <Button
-              className={classes.newEntryButton}
-              color="primary"
-              size="small"
-              variant="outlined"
-            >
-              New entry
-            </Button>
-          </PortletToolbar>
+          <PortletLabel title="PAYMENTS RECEIVED" />
         </PortletHeader>
         <PerfectScrollbar>
-          <PortletContent
-            className={classes.portletContent}
-            noPadding
-          >
+          <PortletContent className={classes.portletContent} noPadding>
             {isLoading && (
               <div className={classes.progressWrapper}>
                 <CircularProgress />
@@ -128,20 +108,11 @@ class OrdersTable extends Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Order ID</TableCell>
+                    <TableCell>Receipt No</TableCell>
                     <TableCell align="left">Customer</TableCell>
-                    <TableCell
-                      align="left"
-                      sortDirection="desc"
-                    >
-                      <Tooltip
-                        enterDelay={300}
-                        title="Sort"
-                      >
-                        <TableSortLabel
-                          active
-                          direction="desc"
-                        >
+                    <TableCell align="left" sortDirection="desc">
+                      <Tooltip enterDelay={300} title="Sort">
+                        <TableSortLabel active direction="desc">
                           Date
                         </TableSortLabel>
                       </Tooltip>
@@ -151,11 +122,7 @@ class OrdersTable extends Component {
                 </TableHead>
                 <TableBody>
                   {orders.map(order => (
-                    <TableRow
-                      className={classes.tableRow}
-                      hover
-                      key={order.id}
-                    >
+                    <TableRow className={classes.tableRow} hover key={order.id}>
                       <TableCell>{order.id}</TableCell>
                       <TableCell className={classes.customerCell}>
                         {order.customer.name}

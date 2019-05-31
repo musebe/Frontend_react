@@ -41,13 +41,9 @@ class Sidebar extends Component {
     return (
       <nav className={rootClassName}>
         <div className={classes.logoWrapper}>
-          <Link className={classes.logoLink} to="/">
-            <img
-              alt="Brainalytica logo"
-              className={classes.logoImage}
-              src="/images/logos/brainalytica_logo.svg"
-            />
-          </Link>
+          <Typography className={classes.nameText} variant="h3">
+            Saadabot
+          </Typography>
         </div>
         <Divider className={classes.logoDivider} />
         <div className={classes.profile}>

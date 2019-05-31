@@ -12,7 +12,7 @@ import { Typography } from '@material-ui/core';
 
 // Material icons
 import {
-  ArrowUpward as ArrowUpwardIcon,
+ 
   PeopleOutlined as PeopleIcon
 } from '@material-ui/icons';
 
@@ -45,28 +45,14 @@ class Users extends Component {
               className={classes.value}
               variant="h3"
             >
-              1600
+             50
             </Typography>
           </div>
           <div className={classes.iconWrapper}>
             <PeopleIcon className={classes.icon} />
           </div>
         </div>
-        <div className={classes.footer}>
-          <Typography
-            className={classes.difference}
-            variant="body2"
-          >
-            <ArrowUpwardIcon />
-            16%
-          </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
-            Since last month
-          </Typography>
-        </div>
+
       </Paper>
     );
   }

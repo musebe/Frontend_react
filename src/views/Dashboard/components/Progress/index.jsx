@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Typography, LinearProgress } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 // Material icons
 import { InsertChartOutlined as InsertChartIcon } from '@material-ui/icons';
@@ -26,35 +26,21 @@ class Progress extends Component {
     const rootClassName = classNames(classes.root, className);
 
     return (
-      <Paper
-        {...rest}
-        className={rootClassName}
-      >
+      <Paper {...rest} className={rootClassName}>
         <div className={classes.content}>
           <div className={classes.details}>
-            <Typography
-              className={classes.title}
-              variant="body2"
-            >
-              PROGRESS
+            <Typography className={classes.title} variant="body2">
+              TOTAL VISITORS
             </Typography>
-            <Typography
-              className={classes.value}
-              variant="h3"
-            >
-              75.5%
+            <Typography className={classes.value} variant="h3">
+              80
             </Typography>
           </div>
           <div className={classes.iconWrapper}>
             <InsertChartIcon className={classes.icon} />
           </div>
         </div>
-        <div className={classes.footer}>
-          <LinearProgress
-            value={75.5}
-            variant="determinate"
-          />
-        </div>
+
       </Paper>
     );
   }
