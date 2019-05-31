@@ -24,10 +24,6 @@ import {
 import {
   DashboardOutlined as DashboardIcon,
   PeopleOutlined as PeopleIcon,
-  ShoppingBasketOutlined as ShoppingBasketIcon,
-  LockOpenOutlined as LockOpenIcon,
-  TextFields as TextFieldsIcon,
-  ImageOutlined as ImageIcon,
   InfoOutlined as InfoIcon,
   AccountBoxOutlined as AccountBoxIcon,
   SettingsOutlined as SettingsIcon
@@ -45,10 +41,7 @@ class Sidebar extends Component {
     return (
       <nav className={rootClassName}>
         <div className={classes.logoWrapper}>
-          <Link
-            className={classes.logoLink}
-            to="/"
-          >
+          <Link className={classes.logoLink} to="/">
             <img
               alt="Brainalytica logo"
               className={classes.logoImage}
@@ -65,30 +58,17 @@ class Sidebar extends Component {
               src="/images/avatars/avatar_1.png"
             />
           </Link>
-          <Typography
-            className={classes.nameText}
-            variant="h6"
-          >
-            Roman Kutepov
-          </Typography>
-          <Typography
-            className={classes.bioText}
-            variant="caption"
-          >
-            Brain Director
+          <Typography className={classes.nameText} variant="h6">
+            Feder Johm
           </Typography>
         </div>
         <Divider className={classes.profileDivider} />
-        <List
-          component="div"
-          disablePadding
-        >
+        <List component="div" disablePadding>
           <ListItem
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
-            to="/dashboard"
-          >
+            to="/dashboard">
             <ListItemIcon className={classes.listItemIcon}>
               <DashboardIcon />
             </ListItemIcon>
@@ -101,8 +81,7 @@ class Sidebar extends Component {
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
-            to="/users"
-          >
+            to="/users">
             <ListItemIcon className={classes.listItemIcon}>
               <PeopleIcon />
             </ListItemIcon>
@@ -115,64 +94,7 @@ class Sidebar extends Component {
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
-            to="/products"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <ShoppingBasketIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Products"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/sign-in"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <LockOpenIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Authentication"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/typography"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <TextFieldsIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Typography"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/icons"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <ImageIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Icons and Images"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/account"
-          >
+            to="/account">
             <ListItemIcon className={classes.listItemIcon}>
               <AccountBoxIcon />
             </ListItemIcon>
@@ -185,8 +107,7 @@ class Sidebar extends Component {
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
-            to="/settings"
-          >
+            to="/settings">
             <ListItemIcon className={classes.listItemIcon}>
               <SettingsIcon />
             </ListItemIcon>
@@ -204,14 +125,12 @@ class Sidebar extends Component {
             <ListSubheader className={classes.listSubheader}>
               Support
             </ListSubheader>
-          }
-        >
+          }>
           <ListItem
             className={classes.listItem}
             component="a"
             href="https://devias.io/contact-us"
-            target="_blank"
-          >
+            target="_blank">
             <ListItemIcon className={classes.listItemIcon}>
               <InfoIcon />
             </ListItemIcon>
