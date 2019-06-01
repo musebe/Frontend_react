@@ -13,7 +13,6 @@ import { withStyles } from '@material-ui/core';
 // Material components
 import {
   Button,
-  Checkbox,
   CircularProgress,
   Grid,
   IconButton,
@@ -47,25 +46,19 @@ const signUp = () => {
 class SignUp extends Component {
   state = {
     values: {
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
-      password: '',
-      policy: false
+      password: ''
     },
     touched: {
-      firstName: false,
-      lastName: false,
+      name: false,
       email: false,
-      password: false,
-      policy: null
+      password: false
     },
     errors: {
-      firstName: null,
-      lastName: null,
+      name: null,
       email: null,
-      password: null,
-      policy: null
+      password: null
     },
     isValid: false,
     isLoading: false,
@@ -108,8 +101,7 @@ class SignUp extends Component {
       this.setState({ isLoading: true });
 
       await signUp({
-        firstName: values.firstName,
-        lastName: values.lastName,
+        name: values.name,
         email: values.email,
         password: values.password
       });
@@ -134,16 +126,11 @@ class SignUp extends Component {
       isLoading
     } = this.state;
 
-    const showFirstNameError =
-      touched.firstName && errors.firstName ? errors.firstName[0] : false;
-    const showLastNameError =
-      touched.lastName && errors.lastName ? errors.lastName[0] : false;
+    const showName = touched.name && errors.name ? errors.name[0] : false;
     const showEmailError =
       touched.email && errors.email ? errors.email[0] : false;
     const showPasswordError =
       touched.password && errors.password ? errors.password[0] : false;
-    const showPolicyError =
-      touched.policy && errors.policy ? errors.policy[0] : false;
 
     return (
       <div className={classes.root}>
@@ -185,31 +172,14 @@ class SignUp extends Component {
                   <div className={classes.fields}>
                     <TextField
                       className={classes.textField}
-                      label="First name"
-                      name="firstName"
+                      label="Business Name"
                       onChange={event =>
-                        this.handleFieldChange('firstName', event.target.value)
+                        this.handleFieldChange('name', event.target.value)
                       }
-                      value={values.firstName}
+                      value={values.name}
                       variant="outlined"
                     />
-                    {showFirstNameError && (
-                      <Typography
-                        className={classes.fieldError}
-                        variant="body2">
-                        {errors.firstName[0]}
-                      </Typography>
-                    )}
-                    <TextField
-                      className={classes.textField}
-                      label="Last name"
-                      onChange={event =>
-                        this.handleFieldChange('lastName', event.target.value)
-                      }
-                      value={values.lastName}
-                      variant="outlined"
-                    />
-                    {showLastNameError && (
+                    {showName && (
                       <Typography
                         className={classes.fieldError}
                         variant="body2">
@@ -248,33 +218,6 @@ class SignUp extends Component {
                         className={classes.fieldError}
                         variant="body2">
                         {errors.password[0]}
-                      </Typography>
-                    )}
-                    <div className={classes.policy}>
-                      <Checkbox
-                        checked={values.policy}
-                        className={classes.policyCheckbox}
-                        color="primary"
-                        name="policy"
-                        onChange={() =>
-                          this.handleFieldChange('policy', !values.policy)
-                        }
-                      />
-                      <Typography
-                        className={classes.policyText}
-                        variant="body1">
-                        I have read the &nbsp;
-                        <Link className={classes.policyUrl} to="#">
-                          Terms and Conditions
-                        </Link>
-                        .
-                      </Typography>
-                    </div>
-                    {showPolicyError && (
-                      <Typography
-                        className={classes.fieldError}
-                        variant="body2">
-                        {errors.policy[0]}
                       </Typography>
                     )}
                   </div>

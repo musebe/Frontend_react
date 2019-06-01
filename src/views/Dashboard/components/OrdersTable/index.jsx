@@ -29,18 +29,12 @@ import {
   Portlet,
   PortletHeader,
   PortletLabel,
-  PortletContent,
-  Status
+  PortletContent
 } from 'components';
 
 // Component styles
 import styles from './styles';
-
-const statusColors = {
-  delivered: 'success',
-  pending: 'info',
-  refund: 'danger'
-};
+import axios from 'axios';
 
 class OrdersTable extends Component {
   signal = false;
@@ -74,11 +68,21 @@ class OrdersTable extends Component {
   }
 
   componentDidMount() {
-    this.signal = true;
+    axios
+      .get('http://localhost:5000/api/lnmcallback')
+      .then(response => {
+        console.log('***************************');
+        console.log(response.data);
 
-    const { limit } = this.state;
+        this.setState({ orders: response.data });
+      })
+      .catch(error => {
+        // handle error
+        console.log(error);
+      });
 
-    this.getOrders(limit);
+     this.signal = true;
+
   }
 
   componentWillUnmount() {
@@ -109,7 +113,7 @@ class OrdersTable extends Component {
                 <TableHead>
                   <TableRow>
                     <TableCell>Receipt No</TableCell>
-                    <TableCell align="left">Customer</TableCell>
+                    <TableCell align="left">Phone Number</TableCell>
                     <TableCell align="left" sortDirection="desc">
                       <Tooltip enterDelay={300} title="Sort">
                         <TableSortLabel active direction="desc">
@@ -117,27 +121,25 @@ class OrdersTable extends Component {
                         </TableSortLabel>
                       </Tooltip>
                     </TableCell>
-                    <TableCell align="left">Status</TableCell>
+                    <TableCell align="left">Amount</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {orders.map(order => (
-                    <TableRow className={classes.tableRow} hover key={order.id}>
-                      <TableCell>{order.id}</TableCell>
+                    <TableRow
+                      className={classes.tableRow}
+                      hover
+                      key={order._id}>
+                      <TableCell>{order.receipt_no}</TableCell>
                       <TableCell className={classes.customerCell}>
-                        {order.customer.name}
+                        {order.phone_no}
                       </TableCell>
                       <TableCell>
-                        {moment(order.createdAt).format('DD/MM/YYYY')}
+                        {moment(order.date).format('DD/MM/YYYY')}
                       </TableCell>
                       <TableCell>
                         <div className={classes.statusWrapper}>
-                          <Status
-                            className={classes.status}
-                            color={statusColors[order.status]}
-                            size="sm"
-                          />
-                          {order.status}
+                          {order.amount}
                         </div>
                       </TableCell>
                     </TableRow>
