@@ -1,221 +1,156 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import PropTypes from 'prop-types';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
 // Material components
 import {
-  Avatar,
-  Checkbox,
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
-  TablePagination
+  Tooltip,
+  TableSortLabel
 } from '@material-ui/core';
 
-// Shared helpers
-import { getInitials } from 'helpers';
+// Shared services
+import { getOrders } from 'services/order';
 
 // Shared components
-import { Portlet, PortletContent } from 'components';
+import {
+  Portlet,
+  PortletHeader,
+  PortletLabel,
+  PortletContent
+} from 'components';
 
 // Component styles
 import styles from './styles';
+import axios from 'axios';
 
-class UsersTable extends Component {
+class OrdersTable extends Component {
+  signal = false;
+
   state = {
-    selectedUsers: [],
-    rowsPerPage: 10,
-    page: 0
+    isLoading: false,
+    limit: 10,
+    orders: []
   };
 
-  handleSelectAll = event => {
-    const { users, onSelect } = this.props;
+  async getOrders(limit) {
+    try {
+      this.setState({ isLoading: true });
 
-    let selectedUsers;
+      const { orders } = await getOrders(limit);
 
-    if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
-    } else {
-      selectedUsers = [];
+      if (this.signal) {
+        this.setState({
+          isLoading: false,
+          orders
+        });
+      }
+    } catch (error) {
+      if (this.signal) {
+        this.setState({
+          isLoading: false,
+          error
+        });
+      }
     }
+  }
 
-    this.setState({ selectedUsers });
+  componentDidMount() {
+    axios
+      .get('http://localhost:5000/api/bot')
+      .then(response => {
+        this.setState({ orders: response.data });
+      })
+      .catch(error => {
+        // handle error
+        console.log(error);
+      });
 
-    onSelect(selectedUsers);
-  };
+    this.signal = true;
+  }
 
-  handleSelectOne = (event, id) => {
-    const { onSelect } = this.props;
-    const { selectedUsers } = this.state;
-
-    const selectedIndex = selectedUsers.indexOf(id);
-    let newSelectedUsers = [];
-
-    if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-    } else if (selectedIndex === 0) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedUsers = newSelectedUsers.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
-    }
-
-    this.setState({ selectedUsers: newSelectedUsers });
-
-    onSelect(newSelectedUsers);
-  };
-
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
+  componentWillUnmount() {
+    this.signal = false;
+  }
 
   render() {
-    const { classes, className, users } = this.props;
-    const { activeTab, selectedUsers, rowsPerPage, page } = this.state;
+    const { classes, className } = this.props;
+    const { isLoading, orders } = this.state;
 
     const rootClassName = classNames(classes.root, className);
+    const showOrders = !isLoading && orders.length > 0;
 
     return (
       <Portlet className={rootClassName}>
-        <PortletContent noPadding>
-          <PerfectScrollbar>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left">
-                    <Checkbox
-                      checked={selectedUsers.length === users.length}
-                      color="primary"
-                      indeterminate={
-                        selectedUsers.length > 0 &&
-                        selectedUsers.length < users.length
-                      }
-                      onChange={this.handleSelectAll}
-                    />
-                    Name
-                  </TableCell>
-                  <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">State</TableCell>
-                  <TableCell align="left">Phone</TableCell>
-                  <TableCell align="left">Registration date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users
-                  .filter(user => {
-                    if (activeTab === 1) {
-                      return !user.returning;
-                    }
-
-                    if (activeTab === 2) {
-                      return user.returning;
-                    }
-
-                    return user;
-                  })
-                  .slice(0, rowsPerPage)
-                  .map(user => (
+        <PortletHeader noDivider>
+          <PortletLabel title="RECEIPTS" />
+        </PortletHeader>
+        <PerfectScrollbar>
+          <PortletContent className={classes.portletContent} noPadding>
+            {isLoading && (
+              <div className={classes.progressWrapper}>
+                <CircularProgress />
+              </div>
+            )}
+            {showOrders && (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell align="left">From</TableCell>
+                    <TableCell align="left">To</TableCell>
+                    <TableCell align="left" sortDirection="desc">
+                      <Tooltip enterDelay={300} title="Sort">
+                        <TableSortLabel active direction="desc">
+                          Date
+                        </TableSortLabel>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orders.map(order => (
                     <TableRow
                       className={classes.tableRow}
                       hover
-                      key={user.id}
-                      selected={selectedUsers.indexOf(user.id) !== -1}
-                    >
-                      <TableCell className={classes.tableCell}>
-                        <div className={classes.tableCellInner}>
-                          <Checkbox
-                            checked={selectedUsers.indexOf(user.id) !== -1}
-                            color="primary"
-                            onChange={event =>
-                              this.handleSelectOne(event, user.id)
-                            }
-                            value="true"
-                          />
-                          <Avatar
-                            className={classes.avatar}
-                            src={user.avatarUrl}
-                          >
-                            {getInitials(user.name)}
-                          </Avatar>
-                          <Link to="#">
-                            <Typography
-                              className={classes.nameText}
-                              variant="body1"
-                            >
-                              {user.name}
-                            </Typography>
-                          </Link>
-                        </div>
+                      key={order.Name}>
+                      <TableCell>{order.Name}</TableCell>
+                      <TableCell className={classes.customerCell}>
+                        {order.From}
                       </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {user.id}
+                      <TableCell>
+                        <div className={classes.statusWrapper}>{order.To}</div>
                       </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {user.address.state}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {user.phone}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {moment(user.createdAt).format('DD/MM/YYYY')}
+                      <TableCell>
+                        {moment(order.date).format('DD/MM/YYYY')}
                       </TableCell>
                     </TableRow>
                   ))}
-              </TableBody>
-            </Table>
-          </PerfectScrollbar>
-          <TablePagination
-            backIconButtonProps={{
-              'aria-label': 'Previous Page'
-            }}
-            component="div"
-            count={users.length}
-            nextIconButtonProps={{
-              'aria-label': 'Next Page'
-            }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            rowsPerPageOptions={[5, 10, 25]}
-          />
-        </PortletContent>
+                </TableBody>
+              </Table>
+            )}
+          </PortletContent>
+        </PerfectScrollbar>
       </Portlet>
     );
   }
 }
 
-UsersTable.propTypes = {
+OrdersTable.propTypes = {
   className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  onSelect: PropTypes.func,
-  onShowDetails: PropTypes.func,
-  users: PropTypes.array.isRequired
+  classes: PropTypes.object.isRequired
 };
 
-UsersTable.defaultProps = {
-  users: [],
-  onSelect: () => {},
-  onShowDetails: () => {}
-};
-
-export default withStyles(styles)(UsersTable);
+export default withStyles(styles)(OrdersTable);

@@ -55,7 +55,7 @@ class Sidebar extends Component {
             />
           </Link>
           <Typography className={classes.nameText} variant="h6">
-            Feder Johm
+            Faderr Johm
           </Typography>
         </div>
         <Divider className={classes.profileDivider} />
@@ -83,7 +83,7 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Users"
+              primary="Users Receipts"
             />
           </ListItem>
           <ListItem
@@ -125,7 +125,7 @@ class Sidebar extends Component {
           <ListItem
             className={classes.listItem}
             component="a"
-            href="https://devias.io/contact-us"
+            href="#"
             target="_blank">
             <ListItemIcon className={classes.listItemIcon}>
               <InfoIcon />
