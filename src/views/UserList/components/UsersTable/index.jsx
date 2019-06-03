@@ -69,7 +69,7 @@ class OrdersTable extends Component {
 
   componentDidMount() {
     axios
-      .get('http://localhost:5000/api/bot')
+      .get('https://backend.saadabot.com/api/bot')
       .then(response => {
         this.setState({ orders: response.data });
       })

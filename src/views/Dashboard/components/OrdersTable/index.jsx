@@ -69,10 +69,10 @@ class OrdersTable extends Component {
 
   componentDidMount() {
     axios
-      .get('http://localhost:5000/api/lnmcallback')
+      .get('https://backend.saadabot.com/api/lnmcallback')
       .then(response => {
-        console.log('***************************');
-        console.log(response.data);
+        // console.log('***************************');
+        // console.log(response.data);
 
         this.setState({ orders: response.data });
       })
@@ -81,8 +81,7 @@ class OrdersTable extends Component {
         console.log(error);
       });
 
-     this.signal = true;
-
+    this.signal = true;
   }
 
   componentWillUnmount() {
