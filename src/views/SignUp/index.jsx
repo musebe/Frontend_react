@@ -1,11 +1,14 @@
+/* eslint-disable quotes */
+/* eslint-disable no-console */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-max-props-per-line */
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-
+import axios from 'axios';
 // Externals
 import PropTypes from 'prop-types';
 import compose from 'recompose/compose';
 import validate from 'validate.js';
-import _ from 'underscore';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -13,7 +16,6 @@ import { withStyles } from '@material-ui/core';
 // Material components
 import {
   Button,
-  CircularProgress,
   Grid,
   IconButton,
   TextField,
@@ -29,41 +31,19 @@ import validators from 'common/validators';
 // Component styles
 import styles from './styles';
 
-// Form validation schema
-import schema from './schema';
-
 validate.validators.checked = validators.checked;
 
-// Service methods
-const signUp = () => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(true);
-    }, 1500);
-  });
-};
-
 class SignUp extends Component {
-  state = {
-    values: {
+  constructor() {
+    super();
+
+    this.state = {
       name: '',
       email: '',
-      password: ''
-    },
-    touched: {
-      name: false,
-      email: false,
-      password: false
-    },
-    errors: {
-      name: null,
-      email: null,
-      password: null
-    },
-    isValid: false,
-    isLoading: false,
-    submitError: null
-  };
+      password: '',
+      errors: ''
+    };
+  }
 
   handleBack = () => {
     const { history } = this.props;
@@ -71,67 +51,29 @@ class SignUp extends Component {
     history.goBack();
   };
 
-  validateForm = _.debounce(() => {
-    const { values } = this.state;
-
-    const newState = { ...this.state };
-    const errors = validate(values, schema);
-
-    newState.errors = errors || {};
-    newState.isValid = errors ? false : true;
-
-    this.setState(newState);
-  }, 300);
-
-  handleFieldChange = (field, value) => {
-    const newState = { ...this.state };
-
-    newState.submitError = null;
-    newState.touched[field] = true;
-    newState.values[field] = value;
-
-    this.setState(newState, this.validateForm);
+  clickSubmit = event => {
+    event.preventDefault();
+    const { name, email, password } = this.state;
+    const user = {
+      name,
+      email,
+      password
+    };
+    // console.log(user);
+    axios
+      .post(`https://backend.saadabot.com/api/business`, { ...user })
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+      });
   };
-
-  handleSignUp = async () => {
-    try {
-      const { history } = this.props;
-      const { values } = this.state;
-
-      this.setState({ isLoading: true });
-
-      await signUp({
-        name: values.name,
-        email: values.email,
-        password: values.password
-      });
-
-      history.push('/sign-in');
-    } catch (error) {
-      this.setState({
-        isLoading: false,
-        serviceError: error
-      });
-    }
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
   };
 
   render() {
     const { classes } = this.props;
-    const {
-      values,
-      touched,
-      errors,
-      isValid,
-      submitError,
-      isLoading
-    } = this.state;
-
-    const showName = touched.name && errors.name ? errors.name[0] : false;
-    const showEmailError =
-      touched.email && errors.email ? errors.email[0] : false;
-    const showPasswordError =
-      touched.password && errors.password ? errors.password[0] : false;
-
+    const { name, email, password } = this.state;
     return (
       <div className={classes.root}>
         <Grid className={classes.grid} container>
@@ -163,82 +105,50 @@ class SignUp extends Component {
               </div>
               <div className={classes.contentBody}>
                 <form className={classes.form}>
-                  <Typography className={classes.title} variant="h2">
-                    Create new account
-                  </Typography>
-                  <Typography className={classes.subtitle} variant="body1">
+                  <Typography variant="h2">Create new account</Typography>
+
+                  <Typography variant="body1">
                     Use your business email to create new account... it's free.
                   </Typography>
+
                   <div className={classes.fields}>
                     <TextField
                       className={classes.textField}
                       label="Business Name"
-                      onChange={event =>
-                        this.handleFieldChange('name', event.target.value)
-                      }
-                      value={values.name}
+                      name="name"
+                      onChange={this.handleChange('name')}
+                      value={name}
                       variant="outlined"
                     />
-                    {showName && (
-                      <Typography
-                        className={classes.fieldError}
-                        variant="body2">
-                        {errors.lastName[0]}
-                      </Typography>
-                    )}
+
                     <TextField
                       className={classes.textField}
                       label="Email address"
                       name="email"
-                      onChange={event =>
-                        this.handleFieldChange('email', event.target.value)
-                      }
-                      value={values.email}
+                      onChange={this.handleChange('email')}
+                      value={email}
                       variant="outlined"
                     />
-                    {showEmailError && (
-                      <Typography
-                        className={classes.fieldError}
-                        variant="body2">
-                        {errors.email[0]}
-                      </Typography>
-                    )}
+
                     <TextField
                       className={classes.textField}
                       label="Password"
-                      onChange={event =>
-                        this.handleFieldChange('password', event.target.value)
-                      }
+                      onChange={this.handleChange('password')}
                       type="password"
-                      value={values.password}
+                      value={password}
                       variant="outlined"
                     />
-                    {showPasswordError && (
-                      <Typography
-                        className={classes.fieldError}
-                        variant="body2">
-                        {errors.password[0]}
-                      </Typography>
-                    )}
                   </div>
-                  {submitError && (
-                    <Typography className={classes.submitError} variant="body2">
-                      {submitError}
-                    </Typography>
-                  )}
-                  {isLoading ? (
-                    <CircularProgress className={classes.progress} />
-                  ) : (
-                    <Button
-                      className={classes.signUpButton}
-                      color="primary"
-                      disabled={!isValid}
-                      onClick={this.handleSignUp}
-                      size="large"
-                      variant="contained">
-                      Sign up now
-                    </Button>
-                  )}
+
+                  <Button
+                    className={classes.signUpButton}
+                    color="primary"
+                    onClick={this.clickSubmit}
+                    size="large"
+                    variant="contained">
+                    Sign up now
+                  </Button>
+
                   <Typography className={classes.signIn} variant="body1">
                     Have an account?{' '}
                     <Link className={classes.signInUrl} to="/sign-in">
